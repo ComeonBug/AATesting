@@ -1,3 +1,5 @@
+import requests
+
 
 class BasicApi:
     url = None
@@ -43,6 +45,21 @@ class BasicApi:
         用于断言
         :return: 实例自身，用于级联操作
         """
-        actual_value = getattr(self.response, key)
-        assert actual_value == excepted_value
+        value = self.response
+        for _key in key.split('.'):
+            print(_key)
+            if isinstance(value,requests.Response):
+                # print(requests.Response.__attrs__)
+                # ['_content', 'status_code', 'headers', 'url', 'history', 'encoding', 'reason', 'cookies', 'elapsed', 'request']
+                if _key == "json()":
+                    value=value.json()
+                else:
+                    value = getattr(value, _key)
+                print("if 里的value",value)
+            elif isinstance(value,(requests.structures.CaseInsensitiveDict, dict)):
+                value = value[_key]
+                print("elif 里的value",value)
+
+        print("if外的value", value)
+        assert value == excepted_value
         return self

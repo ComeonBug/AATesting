@@ -15,10 +15,13 @@ class ApiHttpbinPost(BasicApi):
 class TestCore:
 
     def test_get(self):
-        ApiHttpbinGet().run().validate('status_code', 200)
+        ApiHttpbinGet().run().validate('status_code', 200).validate('url', 'https://httpbin.org/get?abc=123&xyz=345')
 
     def test_get_params(self):
-        ApiHttpbinGet().set_params(abc=123, xyz=345).run().validate('url', 'https://httpbin.org/get?abc=123&xyz=345')
+        ApiHttpbinGet().set_params(abc=123, xyz=345).run()\
+            .validate('headers.Content-Type', 'application/json')\
+            .validate("json().url","https://httpbin.org/get?abc=123&xyz=345")\
+            .validate("json().headers.Host","httpbin.org")
 
     def test_post_json(self):
         request_body = {"a": "1"}
