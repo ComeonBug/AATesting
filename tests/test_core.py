@@ -25,8 +25,12 @@ class TestCore:
 
     def test_post_json(self):
         request_body = {"a": "1"}
-        ApiHttpbinPost().set_data(json=request_body).run().validate('status_code', 200)
+        ApiHttpbinPost().set_data(json=request_body).run()\
+            .validate('status_code', 200) \
+            .validate("json().data", '{"a": "1"}')
 
     def test_post_data(self):
         data = {"a": "1"}
-        ApiHttpbinPost().set_data(data=json.dumps(data)).run().validate('status_code', 200)
+        ApiHttpbinPost().set_data(data=json.dumps(data)).run()\
+            .validate('status_code', 200) \
+            .validate("json().json.a", '1')
