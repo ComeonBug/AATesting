@@ -1,6 +1,6 @@
 import json
 
-from tests.api.httpbin import ApiHttpbinGet, ApiHttpbinPost
+from tests.api.httpbin import *
 
 
 class TestCore:
@@ -25,3 +25,10 @@ class TestCore:
         ApiHttpbinPost().set_data(data=json.dumps(data)).run()\
             .validate('status_code', 200) \
             .validate("json().json.a", '1')
+
+    def test_get_cookie(self):
+        ApiHttpbinGetCookies().run()
+
+    def test_httpbin_extract(self):
+        # todo
+        pass

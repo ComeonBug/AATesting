@@ -1,11 +1,12 @@
 import requests
 
+# 基类：封装获取参数、发起请求、校验结果
 
 class BasicApi:
     url = None
     method = None
-    headers = {"accept": "application/json"}
-    params = {}
+    headers = None
+    params = None
     data = None
     json = None
 
