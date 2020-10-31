@@ -1,6 +1,6 @@
 import requests
 
-# 基类：封装获取参数、发起请求、校验结果
+# 基类：封装 发起请求、校验结果、提取response的参数
 
 class BasicApi:
     url = None
@@ -9,6 +9,15 @@ class BasicApi:
     params = None
     data = None
     json = None
+
+    def set_cookie(self):
+        #todo
+        pass
+
+    def extract(self):
+        # 提取参数用于其他case
+        # todo
+        pass
 
     def set_params(self, **kwargs):
         '''
