@@ -9,10 +9,17 @@ class BasicApi:
     params = None
     data = None
     json = None
+    cookies = None
+    # todo
+    # 可以把所有注入参数的方法封装一下，前面是注入的参数名，后面是注入的参数值
+    # def inject(self,key,value):
+    # 如果能一次函数注入多个值就好了
+    # 测试case输入参数的大小写需要兼容一下
+    #  elif isinstance(value,(requests.structures.CaseInsensitiveDict,dict)):  这句到底是用来干什么的？
 
-    def set_cookie(self):
-        #todo
-        pass
+    def set_cookie(self, cookie):
+        self.cookies = cookie
+        return self
 
     def extract(self):
         # 提取参数用于其他case
@@ -47,6 +54,7 @@ class BasicApi:
         :return: 实例自身，用于级联操作
         """
         self.response = requests.request(self.method, self.url, headers=self.headers, params=self.params,
+                                         cookies=self.cookies,
                                          data=self.data, json=self.json)
         return self
 
@@ -55,21 +63,23 @@ class BasicApi:
         用于断言
         :return: 实例自身，用于级联操作
         """
+        acture_value = self.extract(key)
+        assert acture_value == excepted_value
+        return self
+
+    def extract(self,key):
+        """
+        解析传入的参数，返回response里对应的值
+        :param key:
+        :return:
+        """
         value = self.response
         for _key in key.split('.'):
-            print(_key)
-            if isinstance(value,requests.Response):
-                # print(requests.Response.__attrs__)
-                # ['_content', 'status_code', 'headers', 'url', 'history', 'encoding', 'reason', 'cookies', 'elapsed', 'request']
+            if isinstance(value, requests.Response):
                 if _key == "json()":
-                    value=value.json()
+                    value = value.json()
                 else:
                     value = getattr(value, _key)
-                print("if 里的value",value)
-            elif isinstance(value,(requests.structures.CaseInsensitiveDict, dict)):
+            elif isinstance(value, (requests.structures.CaseInsensitiveDict, dict)):
                 value = value[_key]
-                print("elif 里的value",value)
-
-        print("if外的value", value)
-        assert value == excepted_value
-        return self
+        return value

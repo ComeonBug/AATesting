@@ -27,10 +27,9 @@ class TestCore:
             .validate("json().json.a", '1')
 
     def test_get_cookie(self):
-        # ApiHttpbinGetCookies().run()
-        pass
+        cookies = {"cookie": "abc"}
+        ApiHttpbinGetCookies().set_cookie(cookies).run().validate("json().cookies.cookie","abc")
 
-    def test_httpbin_extract(self):
-        # 提取参数用于其他case
-        # todo
-        pass
+    def test_extract(self):
+        cookies = {"cookie": "abc"}
+        assert ApiHttpbinGetCookies().set_cookie(cookies).run().extract("json().cookies.cookie") == "abc"
