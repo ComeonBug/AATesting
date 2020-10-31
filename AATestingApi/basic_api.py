@@ -2,6 +2,8 @@ import requests
 
 # 基类：封装 发起请求、校验结果、提取response的参数
 
+session = requests.sessions.session()
+
 class BasicApi:
     url = None
     method = None
@@ -10,6 +12,8 @@ class BasicApi:
     data = None
     json = None
     cookies = None
+    response = None
+
     # todo
     # 可以把所有注入参数的方法封装一下，前面是注入的参数名，后面是注入的参数值
     # def inject(self,key,value):
@@ -53,7 +57,7 @@ class BasicApi:
         发送requests请求
         :return: 实例自身，用于级联操作
         """
-        self.response = requests.request(self.method, self.url, headers=self.headers, params=self.params,
+        self.response = session.request(self.method, self.url, headers=self.headers, params=self.params,
                                          cookies=self.cookies,
                                          data=self.data, json=self.json)
         return self
@@ -83,3 +87,6 @@ class BasicApi:
             elif isinstance(value, (requests.structures.CaseInsensitiveDict, dict)):
                 value = value[_key]
         return value
+
+    def get_response(self):
+        return self.response

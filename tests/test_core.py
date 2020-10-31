@@ -33,3 +33,11 @@ class TestCore:
     def test_extract(self):
         cookies = {"cookie": "abc"}
         assert ApiHttpbinGetCookies().set_cookie(cookies).run().extract("json().cookies.cookie") == "abc"
+
+    def test_httpbin_login_status(self):
+        # step 1:login in and set cookie  ?freeform=123
+        ApiHttpbinSetCookies().set_params(freeform=123).run()
+
+        # step 2:call other api and has step1's cookies in its headers
+        resp = ApiHttpbinPost().set_data(json={'abc':'123'}).run().get_response()
+        assert 'freeform=123' in resp.request.headers['Cookie']
